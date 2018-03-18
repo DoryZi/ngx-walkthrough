@@ -4092,6 +4092,10 @@ class WalkthroughComponent {
             }
             this._focusElementZindexes = [];
         }
+        //clear additional holes
+        this.additionalWalkthroughHoleElements.forEach((additionalHole) => {
+            document.removeChild(additionalHole);
+        });
     }
     /**
      * @param {?} htmlElement
@@ -4101,8 +4105,13 @@ class WalkthroughComponent {
         if (!this.walkthroughHoleElements || !this.walkthroughHoleElements.parentNode) {
             throw new Error('cannot create hole elements, when first one does not exist or does not have a parent');
         }
-        const /** @type {?} */ newHole = this.walkthroughHoleElements.cloneNode(true);
+        const /** @type {?} */ newHole = /** @type {?} */ (this.walkthroughHoleElements.cloneNode(true));
+        newHole.style.boxShadow = 'none!important';
+        newHole.style.setProperty('-moz-box-shadow', 'none!important');
+        newHole.style.setProperty('-webkit-box-shadow', 'none!important');
+        newHole.style.backgroundColor = 'rgba(255,255,255,0.5)';
         const /** @type {?} */ createdNewHole = this.walkthroughHoleElements.parentNode.insertBefore(newHole, this.walkthroughHoleElements);
+        this.additionalWalkthroughHoleElements.push(createdNewHole);
         this.setHoleDimensions(htmlElement, /** @type {?} */ (createdNewHole));
     }
     /**
@@ -4207,6 +4216,13 @@ WalkthroughComponent.decorators = [
       -webkit-box-shadow: 0 0 0 1997px rgba(0, 0, 0, 0.8);
       box-shadow: 0 0 0 1997px rgba(0, 0, 0, 0.8);
       -webkit-appearance: none;
+  }
+
+  .walkthrough-addition-hole {
+      background-color: rgba(255,255,255, 0.5);
+      box-shadow: none;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
   }
 
   .walkthrough-element.walkthrough-text {

@@ -866,7 +866,6 @@ export class WalkthroughComponent implements AfterViewChecked {
     //clear additional holes
     this.additionalWalkthroughHoleElements.forEach((additionalHole) => {
       document.removeChild(additionalHole);
-      additionalHole = null;
     });
   }
 
@@ -879,7 +878,7 @@ export class WalkthroughComponent implements AfterViewChecked {
     newHole.style.boxShadow = 'none!important';
     newHole.style.setProperty('-moz-box-shadow', 'none!important');
     newHole.style.setProperty('-webkit-box-shadow', 'none!important');
-    newHole.style.backgroundColor('rgba(255,255,255,0.5)');
+    newHole.style.backgroundColor = 'rgba(255,255,255,0.5)';
     const createdNewHole = this.walkthroughHoleElements.parentNode.insertBefore(newHole, this.walkthroughHoleElements);
     this.additionalWalkthroughHoleElements.push(createdNewHole);
     this.setHoleDimensions(htmlElement, createdNewHole as HTMLElement);
