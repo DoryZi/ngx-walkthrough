@@ -92,6 +92,13 @@ const ZINDEX_NOT_SET = '-99999';
       -webkit-appearance: none;
   }
 
+  .walkthrough-addition-hole {
+      background-color: rgba(255,255,255, 0.5);
+      box-shadow: none;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+  }
+
   .walkthrough-element.walkthrough-text {
       margin-top: 10%;
       width: 50%;
@@ -855,14 +862,26 @@ export class WalkthroughComponent implements AfterViewChecked {
       }
       this._focusElementZindexes = [];
     }
+
+    //clear additional holes
+    this.additionalWalkthroughHoleElements.forEach((additionalHole) => {
+      document.removeChild(additionalHole);
+      additionalHole = null;
+    });
   }
+
 
   addHoleElements(htmlElement: HTMLElement) {
     if (!this.walkthroughHoleElements || !this.walkthroughHoleElements.parentNode) {
       throw new Error('cannot create hole elements, when first one does not exist or does not have a parent');
     }
-    const newHole = this.walkthroughHoleElements.cloneNode(true);
+    const newHole: HTMLElement = this.walkthroughHoleElements.cloneNode(true) as HTMLElement;
+    newHole.style.boxShadow = 'none!important';
+    newHole.style.setProperty('-moz-box-shadow', 'none!important');
+    newHole.style.setProperty('-webkit-box-shadow', 'none!important');
+    newHole.style.backgroundColor('rgba(255,255,255,0.5)');
     const createdNewHole = this.walkthroughHoleElements.parentNode.insertBefore(newHole, this.walkthroughHoleElements);
+    this.additionalWalkthroughHoleElements.push(createdNewHole);
     this.setHoleDimensions(htmlElement, createdNewHole as HTMLElement);
   }
 
