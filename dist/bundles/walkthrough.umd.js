@@ -8518,6 +8518,7 @@ var WalkthroughComponent = (function () {
         this.PADDING_ARROW_MARKER = 25;
         this.isVisible = false;
         this.hasTransclude = false;
+        this.additionalHoleCount = 0;
         // single_tap: string = require('../assets/Single_Tap.png');
         // double_tap: string = require('../assets/Double_Tap.png');
         // swipe_down: string = require('../assets/Swipe_Down.png');
@@ -9025,12 +9026,7 @@ var WalkthroughComponent = (function () {
             htmlElement = /** @type {?} */ (selectorElements[0]);
         }
         if (htmlElement) {
-            var /** @type {?} */ offsetCoordinates = this.getOffsetCoordinates(htmlElement);
-            var /** @type {?} */ width_1 = offsetCoordinates.width;
-            var /** @type {?} */ height_1 = offsetCoordinates.height;
-            var /** @type {?} */ left_1 = offsetCoordinates.left;
-            var /** @type {?} */ top_1 = offsetCoordinates.top;
-            this.setFocus(left_1, top_1, width_1, height_1);
+            var _a = this.setHoleDimensions(htmlElement, this.walkthroughHoleElements), width_1 = _a.width, height_1 = _a.height, left_1 = _a.left, top_1 = _a.top;
             var /** @type {?} */ paddingLeft_1 = parseFloat(this.iconPaddingLeft);
             var /** @type {?} */ paddingTop_1 = parseFloat(this.iconPaddingTop);
             if (!paddingLeft_1) {
@@ -9074,44 +9070,14 @@ var WalkthroughComponent = (function () {
         if (this.focusElementInteractive && selectorElements) {
             for (var /** @type {?} */ i = 0; i < selectorElements.length; ++i) {
                 var /** @type {?} */ selectorElement = /** @type {?} */ (selectorElements.item(i));
+                if (i > 0) {
+                    this.addHoleElements(selectorElement);
+                }
                 this._focusElementZindexes[i] = (selectorElement.style.zIndex) ? selectorElement.style.zIndex : ZINDEX_NOT_SET;
                 selectorElement.style.zIndex = '99999';
             }
         }
     };
-    /**
-     * Sets the walkthrough focus hole on given params with padding
-     * @param left
-     * @param top
-     * @param width
-     * @param height
-     */
-    /**
-     * Sets the walkthrough focus hole on given params with padding
-     * @param {?} left
-     * @param {?} top
-     * @param {?} width
-     * @param {?} height
-     * @return {?}
-     */
-    WalkthroughComponent.prototype.setFocus = /**
-     * Sets the walkthrough focus hole on given params with padding
-     * @param {?} left
-     * @param {?} top
-     * @param {?} width
-     * @param {?} height
-     * @return {?}
-     */
-    function (left, top, width, height) {
-        var /** @type {?} */ holeDimensions = 'left:' + (left - this.PADDING_HOLE) + 'px;' +
-            'top:' + (top - this.PADDING_HOLE) + 'px;' +
-            'width:' + (width + (2 * this.PADDING_HOLE)) + 'px;' +
-            'height:' + (height + (2 * this.PADDING_HOLE)) + 'px;';
-        if (this.walkthroughHoleElements) {
-            this.walkthroughHoleElements.setAttribute('style', holeDimensions);
-        }
-    };
-    
     /**
      * Set the focus on one element
      */
@@ -9221,6 +9187,47 @@ var WalkthroughComponent = (function () {
             }
             this._focusElementZindexes = [];
         }
+    };
+    /**
+     * @param {?} htmlElement
+     * @return {?}
+     */
+    WalkthroughComponent.prototype.addHoleElements = /**
+     * @param {?} htmlElement
+     * @return {?}
+     */
+    function (htmlElement) {
+        if (!this.walkthroughHoleElements || !this.walkthroughHoleElements.parentNode) {
+            throw new Error('cannot create hole elements, when first one does not exist or does not have a parent');
+        }
+        var /** @type {?} */ newHole = this.walkthroughHoleElements.cloneNode(true);
+        var /** @type {?} */ createdNewHole = this.walkthroughHoleElements.parentNode.insertBefore(newHole, this.walkthroughHoleElements);
+        this.setHoleDimensions(htmlElement, /** @type {?} */ (createdNewHole));
+    };
+    /**
+     * @param {?} htmlElement
+     * @param {?} hole
+     * @return {?}
+     */
+    WalkthroughComponent.prototype.setHoleDimensions = /**
+     * @param {?} htmlElement
+     * @param {?} hole
+     * @return {?}
+     */
+    function (htmlElement, hole) {
+        var /** @type {?} */ offsetCoordinates = this.getOffsetCoordinates(htmlElement);
+        var /** @type {?} */ width = offsetCoordinates.width;
+        var /** @type {?} */ height = offsetCoordinates.height;
+        var /** @type {?} */ left = offsetCoordinates.left;
+        var /** @type {?} */ top = offsetCoordinates.top;
+        var /** @type {?} */ holeDimensions = 'left:' + (left - this.PADDING_HOLE) + 'px;' +
+            'top:' + (top - this.PADDING_HOLE) + 'px;' +
+            'width:' + (width + (2 * this.PADDING_HOLE)) + 'px;' +
+            'height:' + (height + (2 * this.PADDING_HOLE)) + 'px;';
+        if (hole) {
+            hole.setAttribute('style', holeDimensions);
+        }
+        return { width: width, height: height, left: left, top: top };
     };
     WalkthroughComponent.decorators = [
         { type: core.Component, args: [{

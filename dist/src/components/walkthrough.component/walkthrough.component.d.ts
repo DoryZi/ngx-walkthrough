@@ -18,6 +18,8 @@ export declare class WalkthroughComponent implements AfterViewChecked {
     isVisible: boolean;
     hasTransclude: boolean;
     walkthroughHoleElements: HTMLElement;
+    additionalWalkthroughHoleElements: HTMLElement[];
+    additionalHoleCount: number;
     walkthroughTextElement: HTMLElement;
     walkthroughIconElement: HTMLElement;
     walkthroughArrowElement: HTMLElement;
@@ -116,14 +118,6 @@ export declare class WalkthroughComponent implements AfterViewChecked {
      */
     setElementLocations(): void;
     /**
-     * Sets the walkthrough focus hole on given params with padding
-     * @param left
-     * @param top
-     * @param width
-     * @param height
-     */
-    setFocus(left: number, top: number, width: number, height: number): void;
-    /**
      * Set the focus on one element
      */
     setFocusOnElement(): void;
@@ -146,4 +140,11 @@ export declare class WalkthroughComponent implements AfterViewChecked {
      * close the walkthgrough and sen an output event
      */
     closeWalkthrough(): void;
+    addHoleElements(htmlElement: HTMLElement): void;
+    setHoleDimensions(htmlElement: HTMLElement, hole: HTMLElement): {
+        width: number;
+        height: number;
+        left: number;
+        top: number;
+    };
 }

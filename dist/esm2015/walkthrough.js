@@ -3586,6 +3586,7 @@ class WalkthroughComponent {
         this.PADDING_ARROW_MARKER = 25;
         this.isVisible = false;
         this.hasTransclude = false;
+        this.additionalHoleCount = 0;
         // single_tap: string = require('../assets/Single_Tap.png');
         // double_tap: string = require('../assets/Double_Tap.png');
         // swipe_down: string = require('../assets/Swipe_Down.png');
@@ -3971,12 +3972,7 @@ class WalkthroughComponent {
             htmlElement = /** @type {?} */ (selectorElements[0]);
         }
         if (htmlElement) {
-            const /** @type {?} */ offsetCoordinates = this.getOffsetCoordinates(htmlElement);
-            const /** @type {?} */ width = offsetCoordinates.width;
-            const /** @type {?} */ height = offsetCoordinates.height;
-            const /** @type {?} */ left = offsetCoordinates.left;
-            const /** @type {?} */ top = offsetCoordinates.top;
-            this.setFocus(left, top, width, height);
+            const { width, height, left, top } = this.setHoleDimensions(htmlElement, this.walkthroughHoleElements);
             let /** @type {?} */ paddingLeft = parseFloat(this.iconPaddingLeft);
             let /** @type {?} */ paddingTop = parseFloat(this.iconPaddingTop);
             if (!paddingLeft) {
@@ -4020,29 +4016,14 @@ class WalkthroughComponent {
         if (this.focusElementInteractive && selectorElements) {
             for (let /** @type {?} */ i = 0; i < selectorElements.length; ++i) {
                 const /** @type {?} */ selectorElement = /** @type {?} */ (selectorElements.item(i));
+                if (i > 0) {
+                    this.addHoleElements(selectorElement);
+                }
                 this._focusElementZindexes[i] = (selectorElement.style.zIndex) ? selectorElement.style.zIndex : ZINDEX_NOT_SET;
                 selectorElement.style.zIndex = '99999';
             }
         }
     }
-    /**
-     * Sets the walkthrough focus hole on given params with padding
-     * @param {?} left
-     * @param {?} top
-     * @param {?} width
-     * @param {?} height
-     * @return {?}
-     */
-    setFocus(left, top, width, height) {
-        let /** @type {?} */ holeDimensions = 'left:' + (left - this.PADDING_HOLE) + 'px;' +
-            'top:' + (top - this.PADDING_HOLE) + 'px;' +
-            'width:' + (width + (2 * this.PADDING_HOLE)) + 'px;' +
-            'height:' + (height + (2 * this.PADDING_HOLE)) + 'px;';
-        if (this.walkthroughHoleElements) {
-            this.walkthroughHoleElements.setAttribute('style', holeDimensions);
-        }
-    }
-    ;
     /**
      * Set the focus on one element
      * @return {?}
@@ -4111,6 +4092,38 @@ class WalkthroughComponent {
             }
             this._focusElementZindexes = [];
         }
+    }
+    /**
+     * @param {?} htmlElement
+     * @return {?}
+     */
+    addHoleElements(htmlElement) {
+        if (!this.walkthroughHoleElements || !this.walkthroughHoleElements.parentNode) {
+            throw new Error('cannot create hole elements, when first one does not exist or does not have a parent');
+        }
+        const /** @type {?} */ newHole = this.walkthroughHoleElements.cloneNode(true);
+        const /** @type {?} */ createdNewHole = this.walkthroughHoleElements.parentNode.insertBefore(newHole, this.walkthroughHoleElements);
+        this.setHoleDimensions(htmlElement, /** @type {?} */ (createdNewHole));
+    }
+    /**
+     * @param {?} htmlElement
+     * @param {?} hole
+     * @return {?}
+     */
+    setHoleDimensions(htmlElement, hole) {
+        const /** @type {?} */ offsetCoordinates = this.getOffsetCoordinates(htmlElement);
+        const /** @type {?} */ width = offsetCoordinates.width;
+        const /** @type {?} */ height = offsetCoordinates.height;
+        const /** @type {?} */ left = offsetCoordinates.left;
+        const /** @type {?} */ top = offsetCoordinates.top;
+        const /** @type {?} */ holeDimensions = 'left:' + (left - this.PADDING_HOLE) + 'px;' +
+            'top:' + (top - this.PADDING_HOLE) + 'px;' +
+            'width:' + (width + (2 * this.PADDING_HOLE)) + 'px;' +
+            'height:' + (height + (2 * this.PADDING_HOLE)) + 'px;';
+        if (hole) {
+            hole.setAttribute('style', holeDimensions);
+        }
+        return { width, height, left, top };
     }
 }
 WalkthroughComponent.decorators = [

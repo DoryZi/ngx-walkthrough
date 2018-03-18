@@ -304,6 +304,8 @@ export class WalkthroughComponent implements AfterViewChecked {
   hasTransclude = false;
 
   walkthroughHoleElements: HTMLElement;
+  additionalWalkthroughHoleElements: HTMLElement[];
+  additionalHoleCount = 0;
   walkthroughTextElement: HTMLElement;
   walkthroughIconElement: HTMLElement;
   walkthroughArrowElement: HTMLElement;
@@ -725,8 +727,6 @@ export class WalkthroughComponent implements AfterViewChecked {
       if (selectorElements.length > 1) {
         console.warn('Multiple items fit selector, displaying first visible as focus item');
       }
-
-
     }
     else {
       console.error('No element found with selector: ' + this.focusElementSelector);
@@ -737,13 +737,7 @@ export class WalkthroughComponent implements AfterViewChecked {
       htmlElement = selectorElements[0] as HTMLElement;
     }
     if (htmlElement) {
-      const offsetCoordinates = this.getOffsetCoordinates(htmlElement);
-      const width = offsetCoordinates.width;
-      const height = offsetCoordinates.height;
-      const left = offsetCoordinates.left;
-      const top = offsetCoordinates.top;
-
-      this.setFocus(left, top, width, height);
+      const { width, height, left, top } = this.setHoleDimensions(htmlElement, this.walkthroughHoleElements);
       let paddingLeft = parseFloat(this.iconPaddingLeft);
       let paddingTop = parseFloat(this.iconPaddingTop);
       if (!paddingLeft) { paddingLeft = 0; }
@@ -783,30 +777,15 @@ export class WalkthroughComponent implements AfterViewChecked {
     if (this.focusElementInteractive && selectorElements) {
       for (let i = 0; i < selectorElements.length; ++i) {
         const selectorElement: HTMLElement = selectorElements.item(i) as HTMLElement;
+        if (i > 0) {
+            this.addHoleElements(selectorElement);
+        }
         this._focusElementZindexes[i] = (selectorElement.style.zIndex) ? selectorElement.style.zIndex : ZINDEX_NOT_SET;
         selectorElement.style.zIndex = '99999';
       }
     }
   }
 
-
-  /**
-   * Sets the walkthrough focus hole on given params with padding
-   * @param left 
-   * @param top 
-   * @param width 
-   * @param height 
-   */
-  setFocus(left: number, top: number, width: number, height: number) {
-    let holeDimensions =
-      'left:' + (left - this.PADDING_HOLE) + 'px;' +
-      'top:' + (top - this.PADDING_HOLE) + 'px;' +
-      'width:' + (width + (2 * this.PADDING_HOLE)) + 'px;' +
-      'height:' + (height + (2 * this.PADDING_HOLE)) + 'px;';
-    if (this.walkthroughHoleElements) {
-      this.walkthroughHoleElements.setAttribute('style', holeDimensions);
-    }
-  };
 
   /**
    * Set the focus on one element
@@ -878,4 +857,30 @@ export class WalkthroughComponent implements AfterViewChecked {
     }
   }
 
+  addHoleElements(htmlElement: HTMLElement) {
+    if (!this.walkthroughHoleElements || !this.walkthroughHoleElements.parentNode) {
+      throw new Error('cannot create hole elements, when first one does not exist or does not have a parent');
+    }
+    const newHole = this.walkthroughHoleElements.cloneNode(true);
+    const createdNewHole = this.walkthroughHoleElements.parentNode.insertBefore(newHole, this.walkthroughHoleElements);
+    this.setHoleDimensions(htmlElement, createdNewHole as HTMLElement);
+  }
+
+  setHoleDimensions(htmlElement: HTMLElement, hole: HTMLElement) {
+      const offsetCoordinates = this.getOffsetCoordinates(htmlElement);
+      const width = offsetCoordinates.width;
+      const height = offsetCoordinates.height;
+      const left = offsetCoordinates.left;
+      const top = offsetCoordinates.top;
+      const holeDimensions =
+          'left:' + (left - this.PADDING_HOLE) + 'px;' +
+          'top:' + (top - this.PADDING_HOLE) + 'px;' +
+          'width:' + (width + (2 * this.PADDING_HOLE)) + 'px;' +
+          'height:' + (height + (2 * this.PADDING_HOLE)) + 'px;';
+      if (hole) {
+          hole.setAttribute('style', holeDimensions);
+      }
+
+      return { width, height, left, top };
+  }
 }
