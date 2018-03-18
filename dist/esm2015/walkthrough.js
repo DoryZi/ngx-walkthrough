@@ -4109,8 +4109,8 @@ class WalkthroughComponent {
             return;
         }
         const /** @type {?} */ newHole = document.createElement('div');
-        newHole.style.backgroundColor = 'rgba(255,255,255,0.5)';
         const /** @type {?} */ createdNewHole = this.walkthroughHoleElements.parentNode.insertBefore(newHole, this.walkthroughHoleElements);
+        createdNewHole.classList.add('walkthrough-additional-hole');
         this.additionalWalkthroughHoleElements.push(createdNewHole);
         this.setHoleDimensions(htmlElement, /** @type {?} */ (createdNewHole));
     }
@@ -4216,6 +4216,12 @@ WalkthroughComponent.decorators = [
       -webkit-box-shadow: 0 0 0 1997px rgba(0, 0, 0, 0.8);
       box-shadow: 0 0 0 1997px rgba(0, 0, 0, 0.8);
       -webkit-appearance: none;
+  }
+
+  .walkthrough-additional-hole {
+      position: absolute;
+      z-index: 1500;
+      background: rgba(255,255,255,0.3);
   }
 
   .walkthrough-addition-hole {

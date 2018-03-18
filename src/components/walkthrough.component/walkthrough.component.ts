@@ -92,6 +92,12 @@ const ZINDEX_NOT_SET = '-99999';
       -webkit-appearance: none;
   }
 
+  .walkthrough-additional-hole {
+      position: absolute;
+      z-index: 1500;
+      background: rgba(255,255,255,0.3);
+  }
+
   .walkthrough-addition-hole {
       background-color: rgba(255,255,255, 0.5);
       box-shadow: none;
@@ -877,8 +883,8 @@ export class WalkthroughComponent implements AfterViewChecked {
       return;
     }
     const newHole: HTMLElement = document.createElement('div');
-    newHole.style.backgroundColor = 'rgba(255,255,255,0.5)';
     const createdNewHole = this.walkthroughHoleElements.parentNode.insertBefore(newHole, this.walkthroughHoleElements);
+    createdNewHole.classList.add('walkthrough-additional-hole');
     this.additionalWalkthroughHoleElements.push(createdNewHole);
     this.setHoleDimensions(htmlElement, createdNewHole as HTMLElement);
   }
