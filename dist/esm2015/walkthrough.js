@@ -4103,12 +4103,9 @@ class WalkthroughComponent {
      */
     addHoleElements(htmlElement) {
         if (!this.walkthroughHoleElements || !this.walkthroughHoleElements.parentNode) {
-            throw new Error('cannot create hole elements, when first one does not exist or does not have a parent');
+            return;
         }
-        const /** @type {?} */ newHole = /** @type {?} */ (this.walkthroughHoleElements.cloneNode(true));
-        newHole.style.boxShadow = 'none!important';
-        newHole.style.setProperty('-moz-box-shadow', 'none!important');
-        newHole.style.setProperty('-webkit-box-shadow', 'none!important');
+        const /** @type {?} */ newHole = document.createElement('div');
         newHole.style.backgroundColor = 'rgba(255,255,255,0.5)';
         const /** @type {?} */ createdNewHole = this.walkthroughHoleElements.parentNode.insertBefore(newHole, this.walkthroughHoleElements);
         this.additionalWalkthroughHoleElements.push(createdNewHole);

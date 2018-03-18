@@ -9202,12 +9202,9 @@ var WalkthroughComponent = (function () {
      */
     function (htmlElement) {
         if (!this.walkthroughHoleElements || !this.walkthroughHoleElements.parentNode) {
-            throw new Error('cannot create hole elements, when first one does not exist or does not have a parent');
+            return;
         }
-        var /** @type {?} */ newHole = /** @type {?} */ (this.walkthroughHoleElements.cloneNode(true));
-        newHole.style.boxShadow = 'none!important';
-        newHole.style.setProperty('-moz-box-shadow', 'none!important');
-        newHole.style.setProperty('-webkit-box-shadow', 'none!important');
+        var /** @type {?} */ newHole = document.createElement('div');
         newHole.style.backgroundColor = 'rgba(255,255,255,0.5)';
         var /** @type {?} */ createdNewHole = this.walkthroughHoleElements.parentNode.insertBefore(newHole, this.walkthroughHoleElements);
         this.additionalWalkthroughHoleElements.push(createdNewHole);

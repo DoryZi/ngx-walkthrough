@@ -872,12 +872,9 @@ export class WalkthroughComponent implements AfterViewChecked {
 
   addHoleElements(htmlElement: HTMLElement) {
     if (!this.walkthroughHoleElements || !this.walkthroughHoleElements.parentNode) {
-      throw new Error('cannot create hole elements, when first one does not exist or does not have a parent');
+      return;
     }
-    const newHole: HTMLElement = this.walkthroughHoleElements.cloneNode(true) as HTMLElement;
-    newHole.style.boxShadow = 'none!important';
-    newHole.style.setProperty('-moz-box-shadow', 'none!important');
-    newHole.style.setProperty('-webkit-box-shadow', 'none!important');
+    const newHole: HTMLElement = document.createElement('div');
     newHole.style.backgroundColor = 'rgba(255,255,255,0.5)';
     const createdNewHole = this.walkthroughHoleElements.parentNode.insertBefore(newHole, this.walkthroughHoleElements);
     this.additionalWalkthroughHoleElements.push(createdNewHole);
