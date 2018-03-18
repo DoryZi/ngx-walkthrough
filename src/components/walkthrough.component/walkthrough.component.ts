@@ -311,7 +311,7 @@ export class WalkthroughComponent implements AfterViewChecked {
   hasTransclude = false;
 
   walkthroughHoleElements: HTMLElement;
-  additionalWalkthroughHoleElements: HTMLElement[];
+  additionalWalkthroughHoleElements: HTMLElement[] = [];
   additionalHoleCount = 0;
   walkthroughTextElement: HTMLElement;
   walkthroughIconElement: HTMLElement;
@@ -784,7 +784,7 @@ export class WalkthroughComponent implements AfterViewChecked {
     if (this.focusElementInteractive && selectorElements) {
       for (let i = 0; i < selectorElements.length; ++i) {
         const selectorElement: HTMLElement = selectorElements.item(i) as HTMLElement;
-        if (i > 0) {
+        if (i > 0 && this.additionalWalkthroughHoleElements.length < i) {
             this.addHoleElements(selectorElement);
         }
         this._focusElementZindexes[i] = (selectorElement.style.zIndex) ? selectorElement.style.zIndex : ZINDEX_NOT_SET;
@@ -863,10 +863,12 @@ export class WalkthroughComponent implements AfterViewChecked {
       this._focusElementZindexes = [];
     }
 
-    //clear additional holes
-    this.additionalWalkthroughHoleElements.forEach((additionalHole) => {
+    // clear additional holes
+    if (this.additionalWalkthroughHoleElements) {
+      this.additionalWalkthroughHoleElements.forEach((additionalHole) => {
       document.removeChild(additionalHole);
-    });
+      });
+    }
   }
 
 

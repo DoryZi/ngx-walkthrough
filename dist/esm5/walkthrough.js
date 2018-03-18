@@ -3593,6 +3593,7 @@ var WalkthroughComponent = (function () {
         this.PADDING_ARROW_MARKER = 25;
         this.isVisible = false;
         this.hasTransclude = false;
+        this.additionalWalkthroughHoleElements = [];
         this.additionalHoleCount = 0;
         // single_tap: string = require('../assets/Single_Tap.png');
         // double_tap: string = require('../assets/Double_Tap.png');
@@ -4145,7 +4146,7 @@ var WalkthroughComponent = (function () {
         if (this.focusElementInteractive && selectorElements) {
             for (var /** @type {?} */ i = 0; i < selectorElements.length; ++i) {
                 var /** @type {?} */ selectorElement = /** @type {?} */ (selectorElements.item(i));
-                if (i > 0) {
+                if (i > 0 && this.additionalWalkthroughHoleElements.length < i) {
                     this.addHoleElements(selectorElement);
                 }
                 this._focusElementZindexes[i] = (selectorElement.style.zIndex) ? selectorElement.style.zIndex : ZINDEX_NOT_SET;
@@ -4262,10 +4263,12 @@ var WalkthroughComponent = (function () {
             }
             this._focusElementZindexes = [];
         }
-        //clear additional holes
-        this.additionalWalkthroughHoleElements.forEach(function (additionalHole) {
-            document.removeChild(additionalHole);
-        });
+        // clear additional holes
+        if (this.additionalWalkthroughHoleElements) {
+            this.additionalWalkthroughHoleElements.forEach(function (additionalHole) {
+                document.removeChild(additionalHole);
+            });
+        }
     };
     /**
      * @param {?} htmlElement
